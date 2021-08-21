@@ -24,7 +24,7 @@ If you have a version of Nix that supports [flakes][3], you can also use it as a
 flake! For example:
 
 ```sh
-$ nix run github:InternetUnexplorer/discord-overlay#discord-canary --recreate-lock-file
+$ nix run github:InternetUnexplorer/discord-overlay#discord-canary
 ```
 
 ## Why did you make this?
