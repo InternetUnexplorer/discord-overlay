@@ -6,8 +6,9 @@
   outputs = { self, nixpkgs }:
     let
       pkgs = import nixpkgs {
-        system = "x86_64-linux";
+        config.allowUnfree = true;
         overlays = [ self.overlay ];
+        system = "x86_64-linux";
       };
 
       mkApp = drv: exePath: {
