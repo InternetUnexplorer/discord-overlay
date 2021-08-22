@@ -1,12 +1,16 @@
 #!/usr/bin/env python3
 
 import json
+from argparse import ArgumentParser
+from os import environ
 from re import search
 from subprocess import run
-from sys import argv
-from typing import Dict
+from typing import Dict, Union
 from urllib.request import Request, urlopen
 
+################################################
+
+GITHUB_REPOSITORY = "InternetUnexplorer/discord-overlay"
 
 ################################################
 
@@ -44,7 +48,7 @@ def get_sha256(url: str) -> str:
 
 ################################################
 
-VersionDict = Dict[str, Dict[str, str]]
+VersionDict = Dict[str, Union[str, Dict[str, str]]]
 
 
 def load_versions() -> VersionDict:
@@ -63,29 +67,47 @@ def save_versions(versions: VersionDict) -> None:
 ################################################
 
 
-def check_for_updates() -> None:
-    """Get the list of packages that have a newer version available."""
-    print("checking for updates...")
+def trigger_update(pname: str, version_old: str, version_new: str) -> None:
+    """Send a `repository_dispatch` event to trigger the `update` workflow."""
 
-    # Make a dict mapping each package to a tuple containing both its current and latest
-    # version.
-    versions_json = load_versions()
-    versions = {
-        pname: (versions_json[pname]["version"], get_version(pname, get_url(pname)))
-        for pname in ["discord", "discord-ptb", "discord-canary"]
+    data = {
+        # We only ever send a repository dispatch to update a package, so here we misuse
+        # the `event_type` field to show a helpful description of what's being updated.
+        "event_type": f"{pname}: {version_old} -> {version_new}",
+        "client_payload": pname,
     }
 
-    for pname, (current, latest) in versions.items():
-        print(
-            f"  {pname}: {current}",
-            "(up-to-date)" if current == latest else f"-> {latest}",
-        )
+    request = Request(f"https://api.github.com/repos/{GITHUB_REPOSITORY}/dispatches")
+    request.add_header("Accept", "application/vnd.github.v3+json")
+    request.add_header("Authorization", f"token {environ['GITHUB_TOKEN']}")
 
-    # Set the `packages` output to the list of packages that need to be updated.
-    packages_to_update = [
-        pname for pname, details in versions.items() if details[0] != details[1]
-    ]
-    print("::set-output", f"name=packages::{json.dumps(packages_to_update)}")
+    urlopen(request, data=json.dumps(data).encode("utf-8"))
+
+
+def check_for_updates() -> None:
+    """Check for updates, and call `trigger_update` to update out-of-date packages."""
+
+    print("checking for updates...")
+
+    versions = load_versions()
+    for pname in ["discord", "discord-ptb", "discord-canary"]:
+        old_version = versions[pname]
+        new_version = get_version(pname, get_url(pname))
+
+        if old_version != new_version:
+            print(f"  {pname}: updating from {old_version} to {new_version}...")
+            # Send a `repository_dispatch` event to update the package.
+            trigger_update(pname, old_version, new_version)
+            # Update `versions.json` with the new version.
+            # This is done regardless of whether the update succeeded, to prevent
+            # successive `repository_dispatch` events being sent when an update fails.
+            versions[pname] = new_version
+            save_versions(versions)
+        else:
+            print(f"  {pname}: up-to-date ({old_version})")
+
+
+################################################
 
 
 def update_package(pname: str) -> None:
@@ -97,7 +119,9 @@ def update_package(pname: str) -> None:
     version = get_version(pname, url)
     sha256 = get_sha256(url)
 
+    # Load the version information from `versions.json`.
     versions = load_versions()
+
     old_version = versions[pname]["version"]
     print(f"  version: {old_version} -> {version}")
     print(f"      url: {url}")
@@ -127,9 +151,13 @@ def update_package(pname: str) -> None:
 
 
 if __name__ == "__main__":
-    if argv[1] == "matrix":
+    parser = ArgumentParser()
+    commands = parser.add_subparsers(required=True, dest="command")
+    commands.add_parser("check")
+    commands.add_parser("update").add_argument("pname", type=str)
+
+    args = parser.parse_args()
+    if args.command == "check":
         check_for_updates()
-    elif argv[1] == "update":
-        update_package(argv[2])
-    else:
-        raise ValueError()
+    elif args.command == "update":
+        update_package(args.pname)

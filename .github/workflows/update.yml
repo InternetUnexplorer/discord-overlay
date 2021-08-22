@@ -1,51 +1,23 @@
 name: Update
 
-on:
-  schedule:
-    - cron: "50 * * * *"
+on: repository_dispatch
+
+concurrency: pushes_to_main # Prevent merge conflicts
 
 jobs:
-  matrix:
-    name: Generate update matrix
-    runs-on: ubuntu-latest
-
-    outputs:
-      packages: ${{ steps.matrix.outputs.packages }}
-
-    steps:
-      - uses: actions/checkout@v2.3.4
-
-      - id: matrix
-        run: ./update.py matrix
-
   update:
-    name: ${{ matrix.package }}
+    name: Update
     runs-on: ubuntu-latest
-    needs: matrix
-
-    if: needs.matrix.outputs.packages != '[]'
-
-    strategy:
-      matrix:
-        package: ${{ fromJson(needs.matrix.outputs.packages) }}
-      fail-fast: false
-      max-parallel: 1
-
     steps:
       - uses: actions/checkout@v2.3.4
-
       - uses: cachix/install-nix-action@v13
         with:
           install_url: https://nixos-nix-install-tests.cachix.org/serve/i6laym9jw3wg9mw6ncyrk6gjx4l34vvx/install
           install_options: "--tarball-url-prefix https://nixos-nix-install-tests.cachix.org/serve"
-          extra_nix_config: experimental-features = nix-command flakes
-
+          extra_nix_config: "experimental-features = nix-command flakes"
       - run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-
-      - run: ./update.py update ${{ matrix.package }}
-
-      - run: nix build .#${{ matrix.package }} --recreate-lock-file --print-build-logs
-
+      - run: python update.py update ${{ github.event.client_payload }}
+      - run: nix build .#${{ github.event.client_payload }} --recreate-lock-file --print-build-logs
       - run: git push

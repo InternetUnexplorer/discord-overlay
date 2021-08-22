@@ -47,10 +47,18 @@ This is a (probably overkill) solution to that problem that may or may not work
 
 ## How does it work?
 
-There is an [action][4] that checks for new versions every hour and updates
-`versions.json` accordingly. This means it won't work if an update requires
-manual intervention (e.g. adding a dependency), but there's really no getting
-around that as far as I know.
+I have a little [GCE instance][6] that checks for new versions every 30 minutes
+(using `update.py check`). When there's an update, the script sends a
+[`repository_dispatch`][7] event to this repository.
+
+That event triggers the [update workflow][4], which updates `versions.json`
+(using `update.py update`) and makes sure the package still builds before
+pushing the changes.
+
+Both parts use the same script (`update.py`), and `versions.json` is different
+on the server's side (it contains a map of `pname` to `version`, instead of to
+an object containing the `version`, `url`, and `sha256`), which can be a bit
+confusing.
 
 ## What am I allowed to do with it?
 
@@ -62,3 +70,5 @@ repository in your own projects without having to provide credit.
 [3]: https://nixos.wiki/wiki/Flakes
 [4]: https://github.com/InternetUnexplorer/discord-overlay/blob/main/.github/workflows/update.yml
 [5]: https://unlicense.org
+[6]: https://cloud.google.com/free
+[7]: https://docs.github.com/en/actions/reference/events-that-trigger-workflows#repository_dispatch
