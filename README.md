@@ -60,6 +60,9 @@ on the server's side (it contains a map of `pname` to `version`, instead of to
 an object containing the `version`, `url`, and `sha256`), which can be a bit
 confusing.
 
+Instructions on how to set up the server (i.e. the part that checks for updates)
+are available [here][8].
+
 ## What am I allowed to do with it?
 
 This is licensed under the [Unlicense][5]. Feel free to use any part of this
@@ -72,3 +75,4 @@ repository in your own projects without having to provide credit.
 [5]: https://unlicense.org
 [6]: https://cloud.google.com/free
 [7]: https://docs.github.com/en/actions/reference/events-that-trigger-workflows#repository_dispatch
+[8]: https://gist.github.com/InternetUnexplorer/9ec81077e4e000788038b611e7e23990
