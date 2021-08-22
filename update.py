@@ -74,7 +74,7 @@ def trigger_update(pname: str, version_old: str, version_new: str) -> None:
         # We only ever send a repository dispatch to update a package, so here we misuse
         # the `event_type` field to show a helpful description of what's being updated.
         "event_type": f"{pname}: {version_old} -> {version_new}",
-        "client_payload": pname,
+        "client_payload": {"package": pname},
     }
 
     request = Request(f"https://api.github.com/repos/{GITHUB_REPOSITORY}/dispatches")
