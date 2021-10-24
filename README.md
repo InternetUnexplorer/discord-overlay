@@ -1,5 +1,9 @@
 # Discord Overlay
 
+![discord version](https://img.shields.io/badge/dynamic/json?style=flat-square&color=%235865F2&label=discord&query=%24%5B%22discord%22%5D.version&url=https%3A%2F%2Fraw.githubusercontent.com%2FInternetUnexplorer%2Fdiscord-overlay%2Fmain%2Fversions.json)
+![discord-ptb version](https://img.shields.io/badge/dynamic/json?style=flat-square&color=%235865F2&label=discord-ptb&query=%24%5B%22discord-ptb%22%5D.version&url=https%3A%2F%2Fraw.githubusercontent.com%2FInternetUnexplorer%2Fdiscord-overlay%2Fmain%2Fversions.json)
+![discord-canary version](https://img.shields.io/badge/dynamic/json?style=flat-square&color=%235865F2&label=discord-canary&query=%24%5B%22discord-canary%22%5D.version&url=https%3A%2F%2Fraw.githubusercontent.com%2FInternetUnexplorer%2Fdiscord-overlay%2Fmain%2Fversions.json)
+
 ## What is this?
 
 This is a [Nixpkgs][1] overlay that attempts to automatically keep the [Discord
