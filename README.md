@@ -28,7 +28,7 @@ If you have a version of Nix that supports [flakes][3], you can also use it as a
 flake! For example:
 
 ```sh
-$ nix run github:InternetUnexplorer/discord-overlay#discord-canary
+$ nix run github:InternetUnexplorer/discord-overlay#discord-canary --update-input nixpkgs --no-write-lock-file
 ```
 
 ## Why did you make this?

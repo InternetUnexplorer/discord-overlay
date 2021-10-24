@@ -1,7 +1,8 @@
 {
-  description = "Discord overlay for NixOS, updated hourly";
+  description =
+    "An overlay providing the latest version(s) of the Discord desktop app, checked every 30 minutes";
 
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
   outputs = { self, nixpkgs }:
     let
