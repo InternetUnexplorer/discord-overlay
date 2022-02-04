@@ -1,8 +1,29 @@
 #!/usr/bin/env python3
 
+# This script is used in two places:
+# - On a server running `update.py check` periodically (check side)
+# - In the GitHub Actions update workflow (`update.py update`) (update side)
+#
+# `update.py check` checks for new versions (`check_for_updates()`). If new versions are found it
+# triggers a `repository_dispatch` event (using `$GITHUB_TOKEN`) that runs the update workflow. It
+# triggers the workflow once per version update, so in the unlikely case that two packages have new
+# versions at the same time it will send two `repository_dispatch`es (so that each of the two
+# version updates get their own commits).
+#
+# `update.py update` updates `versions.json` in the repository and commits the result
+# (`update_package`).
+#
+# In addition to the `versions.json` in the repository, there is a `versions.json` on the check side
+# that `update.py check` uses to keep track of the last version of each package it has seen. Because
+# `update.py check` only checks for version updates, the check-side `versions.json` contains a map
+# of `pname`s to `version`s (instead of a map of `pname`s to an object containing the `version`,
+# `url`, and `sha256`). If `versions.json` does not exist when `update.py check` is run, it will
+# create it by copying the latest (i.e. main branch) `versions.json` from the repository and
+# transforming it into the correct format (`init_versions`).
+
 import json
 from argparse import ArgumentParser
-from os import environ
+from os import environ, path
 from re import search
 from subprocess import run
 from typing import Dict, Union
@@ -64,6 +85,13 @@ def save_versions(versions: VersionDict) -> None:
         file.write("\n")
 
 
+def init_versions() -> None:
+    """Initialize the check-side `versions.json` based on the one in the repository"""
+    url = f"https://github.com/{GITHUB_REPOSITORY}/raw/main/versions.json"
+    versions = json.loads(urlopen(url).read().decode("utf-8"))
+    save_versions({pname: data["version"] for pname, data in versions.items()})
+
+
 ################################################
 
 
@@ -71,8 +99,8 @@ def trigger_update(pname: str, version_old: str, version_new: str) -> None:
     """Send a `repository_dispatch` event to trigger the `update` workflow."""
 
     data = {
-        # We only ever send a repository dispatch to update a package, so here we misuse
-        # the `event_type` field to show a helpful description of what's being updated.
+        # We only ever send a repository dispatch to update a package, so here we misuse the
+        # `event_type` field to show a helpful description of what's being updated.
         "event_type": f"{pname}: {version_old} -> {version_new}",
         "client_payload": {"package": pname},
     }
@@ -87,9 +115,13 @@ def trigger_update(pname: str, version_old: str, version_new: str) -> None:
 def check_for_updates() -> None:
     """Check for updates, and call `trigger_update` to update out-of-date packages."""
 
-    print("checking for updates...")
+    if not path.isfile("versions.json"):
+        print("warning: versions.json does not exist, creating it")
+        init_versions()
 
     versions = load_versions()
+
+    print("checking for updates...")
     for pname in ["discord", "discord-ptb", "discord-canary"]:
         old_version = versions[pname]
         new_version = get_version(pname, get_url(pname))
@@ -99,8 +131,8 @@ def check_for_updates() -> None:
             # Send a `repository_dispatch` event to update the package.
             trigger_update(pname, old_version, new_version)
             # Update `versions.json` with the new version.
-            # This is done regardless of whether the update succeeded, to prevent
-            # successive `repository_dispatch` events being sent when an update fails.
+            # This is done regardless of whether the update succeeded, to prevent successive
+            # `repository_dispatch` events being sent when an update fails.
             versions[pname] = new_version
             save_versions(versions)
         else:
