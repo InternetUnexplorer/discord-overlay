@@ -8,7 +8,7 @@
     let
       pkgs = import nixpkgs {
         config.allowUnfree = true;
-        overlays = [ self.overlay ];
+        overlays = [ self.overlays.default ];
         system = "x86_64-linux";
       };
 
@@ -27,6 +27,7 @@
         discord-canary = mkApp pkgs.discord-canary "/bin/discordcanary";
       };
 
-      overlay = import ./default.nix;
+      overlays.default = import ./default.nix;
+      overlay = self.overlays.default;
     };
 }
