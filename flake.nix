@@ -27,6 +27,9 @@
         discord-canary = mkApp pkgs.discord-canary "/bin/discordcanary";
       };
 
+      packages.x86_64-linux.default = self.packages.x86_64-linux.discord;
+      apps.x86_64-linux.default = self.apps.x86_64-linux.discord;
+
       overlays.default = import ./default.nix;
       overlay = self.overlays.default;
     };
