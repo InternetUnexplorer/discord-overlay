@@ -1,25 +1,13 @@
 #!/usr/bin/env python3
 
 # This script is used in two places:
-# - On a server running `update.py check` periodically (check side)
-# - In the GitHub Actions update workflow (`update.py update`) (update side)
+# - On a server running `update.py check` periodically
+# - In the GitHub Actions update workflow (`update.py update`)
 #
-# `update.py check` checks for new versions (`check_for_updates()`). If new versions are found it
-# triggers a `repository_dispatch` event (using `$GITHUB_TOKEN`) that runs the update workflow. It
-# triggers the workflow once per version update, so in the unlikely case that two packages have new
-# versions at the same time it will send two `repository_dispatch`es (so that each of the two
-# version updates get their own commits).
+# Check EXPLANATION.md for more information on how the update process works.
 #
-# `update.py update` updates `versions.json` in the repository and commits the result
-# (`update_package`).
-#
-# In addition to the `versions.json` in the repository, there is a `versions.json` on the check side
-# that `update.py check` uses to keep track of the last version of each package it has seen. Because
-# `update.py check` only checks for version updates, the check-side `versions.json` contains a map
-# of `pname`s to `version`s (instead of a map of `pname`s to an object containing the `version`,
-# `url`, and `sha256`). If `versions.json` does not exist when `update.py check` is run, it will
-# create it by copying the latest (i.e. main branch) `versions.json` from the repository and
-# transforming it into the correct format (`init_versions`).
+# In order to send `repository_dispatch` events, $GITHUB_TOKEN needs to be set.
+# The token needs to have the `repo` scope.
 
 import json
 from argparse import ArgumentParser

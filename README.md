@@ -59,13 +59,8 @@ That event triggers the [update workflow][4], which updates `versions.json`
 (using `update.py update`) and makes sure the package still builds before
 pushing the changes.
 
-Both parts use the same script (`update.py`), and `versions.json` is different
-on the server's side (it contains a map of `pname` to `version`, instead of to
-an object containing the `version`, `url`, and `sha256`), which can be a bit
-confusing.
-
-Instructions on how to set up the server (i.e. the part that checks for updates)
-are available [here][8].
+[EXPLANATION.md](./EXPLANATION.md) contains more information about how the
+update process works.
 
 ## What am I allowed to do with it?
 
