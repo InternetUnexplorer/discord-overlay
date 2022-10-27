@@ -16,5 +16,11 @@ in {
   discord-canary = prev.discord-canary.overrideAttrs (_: {
     inherit (versions.discord-canary) version;
     src = builtins.fetchurl { inherit (versions.discord-canary) url sha256; };
+
+    # https://github.com/InternetUnexplorer/discord-overlay/issues/10
+    postInstall = (prev.postInstall or "") + ''
+      ln -s ${prev.electron_17}/lib/electron/chrome_crashpad_handler \
+        $out/opt/DiscordCanary || true
+    '';
   });
 }
