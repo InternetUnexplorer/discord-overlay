@@ -19,8 +19,7 @@ in {
 
     # https://github.com/InternetUnexplorer/discord-overlay/issues/10
     postInstall = (prev.postInstall or "") + ''
-      ln -s ${prev.electron_17}/lib/electron/chrome_crashpad_handler \
-        $out/opt/DiscordCanary || true
+      cp -n ${prev.electron_17}/lib/electron/chrome_crashpad_handler $out/opt/DiscordCanary
     '';
   });
 }
