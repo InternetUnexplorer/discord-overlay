@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: cachix/install-nix-action@b95f68250363e6996e0fdafe18cf23c3fc9f873b
+      - uses: cachix/install-nix-action@5c11eae19dba042788936d4f1c9685fdd814ac49
         with:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
       - run: |
