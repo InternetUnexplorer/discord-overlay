@@ -15,5 +15,6 @@ jobs:
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
       - run: python update.py update ${{ github.event.client_payload.package }}
-      - run: nix build .#${{ github.event.client_payload.package }} --recreate-lock-file --print-build-logs
+      - run: nix flake update
+      - run: nix build .#${{ github.event.client_payload.package }} --print-build-logs
       - run: git push
