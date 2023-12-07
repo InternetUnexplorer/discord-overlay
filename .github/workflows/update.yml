@@ -10,6 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: refs/heads/main
       - uses: cachix/install-nix-action@v24
       - run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -17,4 +19,5 @@ jobs:
       - run: python update.py update ${{ github.event.client_payload.package }}
       - run: nix flake update
       - run: nix build .#${{ github.event.client_payload.package }} --print-build-logs
+      - run: git pull --rebase
       - run: git push
