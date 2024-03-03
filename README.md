@@ -4,11 +4,17 @@
 ![discord-ptb version](https://img.shields.io/badge/dynamic/json?style=flat-square&color=%235865F2&label=discord-ptb&query=%24%5B%22discord-ptb%22%5D.version&url=https%3A%2F%2Fraw.githubusercontent.com%2FInternetUnexplorer%2Fdiscord-overlay%2Fmain%2Fversions.json)
 ![discord-canary version](https://img.shields.io/badge/dynamic/json?style=flat-square&color=%235865F2&label=discord-canary&query=%24%5B%22discord-canary%22%5D.version&url=https%3A%2F%2Fraw.githubusercontent.com%2FInternetUnexplorer%2Fdiscord-overlay%2Fmain%2Fversions.json)
 
-> **Warning**
-> Now that [PR 197248](https://github.com/NixOS/nixpkgs/pull/197248) has landed,
-> **this overlay is deprecated and might be discontinued in the future**. The
-> only advantage this overlay has now over using the version in Nixpkgs is that
-> you'll get the latest version a day or two earlier.
+---
+
+> [!CAUTION]
+> **This overlay is deprecated now that
+> https://github.com/NixOS/nixpkgs/pull/197248 has been merged.**
+>
+> This overlay is no longer actively maintained and might stop working in the
+> future. It has been left up becuse it might still be useful in certain
+> situations, but you should be careful with how you use it.
+
+---
 
 This is a Nixpkgs overlay that provides the latest[^1] versions of the Discord
 desktop apps. You can use it with or without flakes:
