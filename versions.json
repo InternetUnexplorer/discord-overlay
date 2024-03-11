@@ -10,8 +10,8 @@
     "version": "0.0.300"
   },
   "discord-ptb": {
-    "sha256": "0jh4b0l917nh2agp97vwbyp7qmvx74ny3hhrdd87yg2z82xranq6",
-    "url": "https://dl-ptb.discordapp.net/apps/linux/0.0.73/discord-ptb-0.0.73.tar.gz",
-    "version": "0.0.73"
+    "sha256": "16dikhq1kracxx3rh5y5g5bpqxsag8ac7fz97nl4w51qk28vm3i3",
+    "url": "https://dl-ptb.discordapp.net/apps/linux/0.0.74/discord-ptb-0.0.74.tar.gz",
+    "version": "0.0.74"
   }
 }
