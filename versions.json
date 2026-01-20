@@ -1,8 +1,8 @@
 {
   "discord": {
-    "sha256": "0hm93yyh3illhyx5n626fbz1pjw1krqwnv5f5zxyr86j9jbp9cp2",
-    "url": "https://stable.dl2.discordapp.net/apps/linux/0.0.120/discord-0.0.120.tar.gz",
-    "version": "0.0.120"
+    "sha256": "08ypvmsvdn1v8fgh1sw5wx73d9sy02iqhpq9cp0g37yr1p5p27sr",
+    "url": "https://stable.dl2.discordapp.net/apps/linux/0.0.121/discord-0.0.121.tar.gz",
+    "version": "0.0.121"
   },
   "discord-canary": {
     "sha256": "0fk0kly6gz7n1rcx9cx6f2gsxzqc8c4rv8g103li8b9zks3k9316",
