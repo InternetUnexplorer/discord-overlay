@@ -5,9 +5,9 @@
     "version": "0.0.126"
   },
   "discord-canary": {
-    "sha256": "0lhadzfgzhjb1mznbjcvaaniadgvcn0a8hn2cp8lnh771dwpjc5s",
-    "url": "https://canary.dl2.discordapp.net/apps/linux/0.0.883/discord-canary-0.0.883.tar.gz",
-    "version": "0.0.883"
+    "sha256": "00p9584whnc4p6npxsbsm2xwipwhs4iwrmy8c4rgk16g2vcsglcc",
+    "url": "https://canary.dl2.discordapp.net/apps/linux/0.0.884/discord-canary-0.0.884.tar.gz",
+    "version": "0.0.884"
   },
   "discord-ptb": {
     "sha256": "1xmf9gn0zvi6r0gz3lvz66f31kbpmkihja0s3h13li93vdqih476",
